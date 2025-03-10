@@ -1,5 +1,7 @@
 package ru.developeerz.gateway.api.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,12 @@ import ru.developeerz.gateway.core.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Контроллер пользователей")
 public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "Регистрация")
     @PostMapping(ApiPaths.REGISTRATION)
     public ResponseEntity<?> userRegistration(@RequestBody @Valid RegistrationRequest request) {
         return userService.registrationUser(request);

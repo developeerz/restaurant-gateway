@@ -6,7 +6,7 @@ import ru.developeerz.gateway.api.booking.model.RequestCancelBooking;
 import ru.developeerz.gateway.api.booking.model.RequestCreationBookingTable;
 import ru.developeerz.gateway.api.booking.model.RequestDeletionBookingTable;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BookingMapper {
 
     RequestBookingTable map(RequestCreationBookingTable requestCreationBookingTable, int userId);

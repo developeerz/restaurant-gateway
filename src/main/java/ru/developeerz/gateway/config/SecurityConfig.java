@@ -33,6 +33,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .requestMatchers(ApiPaths.LOGIN, ApiPaths.REGISTRATION, ApiPaths.VERIFY).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.MENU).permitAll()
                         .requestMatchers(HttpMethod.DELETE, ApiPaths.MENU).hasAuthority(Authority.ADMIN.getAuthority())
