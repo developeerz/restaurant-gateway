@@ -11,4 +11,6 @@ public class ApiPaths {
     public static final String MENU = "api/gateway/restaurant/menu";
 
     public static final String BOOKING = "api/gateway/booking";
+
+    public static final String BOOKING_BY_ID = "api/gateway/booking/{table_id}";
 }

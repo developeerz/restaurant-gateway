@@ -39,8 +39,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, ApiPaths.MENU).hasAuthority(Authority.ADMIN.getAuthority())
                         .requestMatchers(HttpMethod.GET, ApiPaths.BOOKING).permitAll()
                         .requestMatchers(HttpMethod.POST, ApiPaths.BOOKING).hasAnyAuthority(
-                                Authority.ADMIN.getAuthority(), Authority.USER.getAuthority())
-                        .requestMatchers(HttpMethod.DELETE, ApiPaths.BOOKING).hasAuthority(Authority.ADMIN.getAuthority())
+                                Authority.ADMIN.getAuthority(), Authority.USER.getAuthority()
+                        )
+                        .requestMatchers(HttpMethod.DELETE, ApiPaths.BOOKING).hasAnyAuthority(
+                                Authority.ADMIN.getAuthority(), Authority.USER.getAuthority()
+                        )
                         .anyRequest().denyAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
