@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.developeerz.gateway.api.user.model.LoginRequest;
 import ru.developeerz.gateway.api.user.model.JwtResponse;
+import ru.developeerz.gateway.api.user.model.LoginRequest;
 import ru.developeerz.gateway.api.user.model.RegistrationRequest;
 import ru.developeerz.gateway.api.user.model.VerificationRequest;
 
@@ -16,21 +16,21 @@ public class UserService {
 
     private final WebClient userWebClient;
 
-    public ResponseEntity<?> registrationUser(RegistrationRequest request) {
-          ResponseEntity<?> response = userWebClient.post()
+    public String registrationUser(RegistrationRequest request) {
+          String response = userWebClient.post()
                 .uri("api/user/registration")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(ResponseEntity.class)
+                .bodyToMono(String.class)
                 .block();
 
-        if (response == null || response.getStatusCode().is5xxServerError()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Сервис упал...");
-        } else if (response.getStatusCode().is4xxClientError()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверные данные");
-        }
+//        if (response == null || response.getStatusCode().is5xxServerError()) {
+////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Сервис упал...");
+//        } else if (response.getStatusCode().is4xxClientError()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверные данные");
+//        }
 
-        return ResponseEntity.ok("Verify your email");
+        return response;
     }
 
     public ResponseEntity<?> verificationUser(VerificationRequest request) {

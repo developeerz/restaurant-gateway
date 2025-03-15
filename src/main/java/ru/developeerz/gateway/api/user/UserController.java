@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,16 +16,17 @@ import ru.developeerz.gateway.api.user.model.VerificationRequest;
 import ru.developeerz.gateway.core.service.UserService;
 
 
+@Tag(name = "Контроллер пользователей")
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Контроллер пользователей")
+@Validated
 public class UserController {
 
     private final UserService userService;
 
     @Operation(summary = "Регистрация")
     @PostMapping(ApiPaths.REGISTRATION)
-    public ResponseEntity<?> userRegistration(@RequestBody @Valid RegistrationRequest request) {
+    public String userRegistration(@RequestBody @Valid RegistrationRequest request) {
         return userService.registrationUser(request);
     }
 

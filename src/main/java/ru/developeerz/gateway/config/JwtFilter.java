@@ -9,13 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -38,8 +37,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         Claims claims = jwtUtil.getClaims(jwtToken);
         // TODO check expired
-        List<Authority> authorities = jwtUtil.getAuthorities(claims);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(null, null, authorities);
+        int principal = jwtUtil.getPrincipal(claims);
+        Set<Authority> authorities = jwtUtil.getAuthorities(claims);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
