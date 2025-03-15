@@ -1,10 +1,10 @@
 package ru.developeerz.gateway.core.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import ru.developeerz.gateway.api.user.model.JwtResponse;
 import ru.developeerz.gateway.api.user.model.LoginRequest;
 import ru.developeerz.gateway.api.user.model.RegistrationRequest;
@@ -16,54 +16,29 @@ public class UserService {
 
     private final WebClient userWebClient;
 
-    public String registrationUser(RegistrationRequest request) {
-          String response = userWebClient.post()
+    public void registrationUser(RegistrationRequest request) {
+        userWebClient.post()
                 .uri("api/user/registration")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-//        if (response == null || response.getStatusCode().is5xxServerError()) {
-////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Сервис упал...");
-//        } else if (response.getStatusCode().is4xxClientError()) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверные данные");
-//        }
-
-        return response;
+                .bodyToMono(Void.class);
     }
 
-    public ResponseEntity<?> verificationUser(VerificationRequest request) {
-        ResponseEntity<JwtResponse> response = userWebClient.post()
+    public Mono<ResponseEntity<JwtResponse>> verificationUser(VerificationRequest request) {
+        return userWebClient.post()
                 .uri("api/user/verify")
                 .bodyValue(request)
                 .retrieve()
-                .toEntity(JwtResponse.class)
-                .block();
-
-        if (response == null || response.getStatusCode().is5xxServerError()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Сервис упал...");
-        } else if (response.getStatusCode().is4xxClientError()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверные данные");
-        }
-
-        return response;
+                .bodyToMono(JwtResponse.class)
+                .map(jwtResponse -> ResponseEntity.ok(jwtResponse));
     }
 
-    public ResponseEntity<?> loginUser(LoginRequest request) {
-        ResponseEntity<JwtResponse> response = userWebClient.post()
+    public Mono<ResponseEntity<JwtResponse>> loginUser(LoginRequest request) {
+        return userWebClient.post()
                 .uri("api/user/login")
                 .bodyValue(request)
                 .retrieve()
-                .toEntity(JwtResponse.class)
-                .block();
-
-        if (response == null || response.getStatusCode().is5xxServerError()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Сервис упал...");
-        } else if (response.getStatusCode().is4xxClientError()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверные данные");
-        }
-
-        return response;
+                .bodyToMono(JwtResponse.class)
+                .map(jwtResponse -> ResponseEntity.ok(jwtResponse));
     }
 }

@@ -9,7 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import ru.developeerz.gateway.api.ApiPaths;
+import ru.developeerz.gateway.api.user.model.JwtResponse;
 import ru.developeerz.gateway.api.user.model.LoginRequest;
 import ru.developeerz.gateway.api.user.model.RegistrationRequest;
 import ru.developeerz.gateway.api.user.model.VerificationRequest;
@@ -26,17 +28,17 @@ public class UserController {
 
     @Operation(summary = "Регистрация")
     @PostMapping(ApiPaths.REGISTRATION)
-    public String userRegistration(@RequestBody @Valid RegistrationRequest request) {
-        return userService.registrationUser(request);
+    public void userRegistration(@RequestBody @Valid RegistrationRequest request) {
+        userService.registrationUser(request);
     }
 
     @PostMapping(ApiPaths.VERIFY)
-    public ResponseEntity<?> userVerify(@RequestBody @Valid VerificationRequest request) {
+    public Mono<ResponseEntity<JwtResponse>> userVerify(@RequestBody @Valid VerificationRequest request) {
         return userService.verificationUser(request);
     }
 
     @PostMapping(ApiPaths.LOGIN)
-    public ResponseEntity<?> userVerify(@RequestBody @Valid LoginRequest request) {
+    public Mono<ResponseEntity<JwtResponse>> userVerify(@RequestBody @Valid LoginRequest request) {
         return userService.loginUser(request);
     }
 }
