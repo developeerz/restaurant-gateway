@@ -18,7 +18,7 @@ public class UserService {
 
     public void registrationUser(RegistrationRequest request) {
         userWebClient.post()
-                .uri("api/user/registration")
+                .uri("/api/user/registration")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(Void.class);
@@ -26,7 +26,7 @@ public class UserService {
 
     public Mono<ResponseEntity<JwtResponse>> verificationUser(VerificationRequest request) {
         return userWebClient.post()
-                .uri("api/user/verify")
+                .uri("/api/user/verify")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(JwtResponse.class)
@@ -35,7 +35,7 @@ public class UserService {
 
     public Mono<ResponseEntity<JwtResponse>> loginUser(LoginRequest request) {
         return userWebClient.post()
-                .uri("api/user/login")
+                .uri("/api/user/login")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(JwtResponse.class)
