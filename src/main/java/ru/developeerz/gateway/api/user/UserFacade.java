@@ -1,7 +1,6 @@
-package ru.developeerz.gateway.core.service;
+package ru.developeerz.gateway.api.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -12,7 +11,7 @@ import ru.developeerz.gateway.api.user.model.VerificationRequest;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserFacade {
 
     private final WebClient userWebClient;
 
@@ -24,21 +23,20 @@ public class UserService {
                 .bodyToMono(Void.class);
     }
 
-    public Mono<ResponseEntity<JwtResponse>> verificationUser(VerificationRequest request) {
+    public Mono<JwtResponse> verificationUser(VerificationRequest request) {
         return userWebClient.post()
                 .uri("/api/user/verify")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(JwtResponse.class)
-                .map(jwtResponse -> ResponseEntity.ok(jwtResponse));
+                .bodyToMono(JwtResponse.class);
     }
 
-    public Mono<ResponseEntity<JwtResponse>> loginUser(LoginRequest request) {
+    public Mono<JwtResponse> loginUser(LoginRequest request) {
         return userWebClient.post()
                 .uri("/api/user/login")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(JwtResponse.class)
-                .map(jwtResponse -> ResponseEntity.ok(jwtResponse));
+                .bodyToMono(JwtResponse.class);
     }
+
 }

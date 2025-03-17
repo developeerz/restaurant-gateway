@@ -1,6 +1,5 @@
 package ru.developeerz.gateway.config;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,15 +11,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.developeerz.gateway.api.authentication.AuthenticationFacade;
+import ru.developeerz.gateway.api.authentication.model.AuthenticationRequest;
+import ru.developeerz.gateway.api.authentication.model.AuthenticationResponse;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final AuthenticationFacade authenticationFacade;
 
     @Override
     protected void doFilterInternal(
@@ -35,12 +39,13 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        Claims claims = jwtUtil.getClaims(jwtToken);
-        // TODO check expired
-        int principal = jwtUtil.getPrincipal(claims);
-        Set<Authority> authorities = jwtUtil.getAuthorities(claims);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        AuthenticationResponse auth = authenticationFacade.getAuthentication(new AuthenticationRequest(jwtToken));
+        if (auth != null) {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    auth.userId(), null, extractAuthority(auth.authority())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
 
         filterChain.doFilter(request, response);
     }
@@ -52,5 +57,17 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         return authHeader.substring(7);
+    }
+
+    private Set<Authority> extractAuthority(Set<String> auths) {
+        return auths.stream().map(this::authorityCheck).filter(Objects::nonNull).collect(Collectors.toSet());
+    }
+
+    private Authority authorityCheck(String authority) {
+        try {
+            return Authority.valueOf(authority);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

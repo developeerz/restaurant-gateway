@@ -15,22 +15,21 @@ import ru.developeerz.gateway.api.booking.model.BookingFilter;
 import ru.developeerz.gateway.api.booking.model.RequestCreationBookingTable;
 import ru.developeerz.gateway.api.booking.model.RequestDeletionBookingTable;
 import ru.developeerz.gateway.api.booking.model.Table;
-import ru.developeerz.gateway.core.service.BookingService;
 
 @RestController
 @RequiredArgsConstructor
 public class BookingController {
 
-    public final BookingService bookingService;
+    public final BookingFacade bookingFacade;
 
     @GetMapping(ApiPaths.BOOKING)
     public ResponseEntity<?> getAvailableTables(@ParameterObject BookingFilter filter) {
-        return bookingService.getBookingTables(filter);
+        return bookingFacade.getBookingTables(filter);
     }
 
     @GetMapping(ApiPaths.BOOKING_BY_ID)
     public ResponseEntity<?> getBookingTimesTable(@ParameterObject Table table) {
-        return bookingService.getBookingTable(table);
+        return bookingFacade.getBookingTable(table);
     }
 
     @PostMapping(ApiPaths.BOOKING_BY_ID)
@@ -38,11 +37,11 @@ public class BookingController {
             @PathVariable(name = "table_id") int tableId,
             @Valid @RequestBody RequestCreationBookingTable request
     ) {
-        return bookingService.createBookingTable(tableId, request);
+        return bookingFacade.createBookingTable(tableId, request);
     }
 
     @DeleteMapping(ApiPaths.BOOKING)
     public ResponseEntity<?> cancelBookingTable(@Valid @RequestBody RequestDeletionBookingTable request) {
-        return bookingService.cancelBookingTable(request);
+        return bookingFacade.cancelBookingTable(request);
     }
 }

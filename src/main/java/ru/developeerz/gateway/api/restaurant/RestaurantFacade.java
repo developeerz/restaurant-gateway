@@ -1,10 +1,10 @@
-package ru.developeerz.gateway.core.service;
+package ru.developeerz.gateway.api.restaurant;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RestaurantService {
+public class RestaurantFacade {
 
 
     public ResponseEntity<?> getMenu() {

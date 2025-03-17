@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, ApiPaths.BOOKING).hasAnyAuthority(
                                 Authority.ADMIN.getAuthority(), Authority.USER.getAuthority()
                         )
-                        .anyRequest().denyAll()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

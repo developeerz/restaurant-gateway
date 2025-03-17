@@ -1,4 +1,4 @@
-package ru.developeerz.gateway.core.service;
+package ru.developeerz.gateway.api.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
@@ -17,7 +17,7 @@ import ru.developeerz.gateway.api.booking.model.Table;
 
 @Service
 @RequiredArgsConstructor
-public class BookingService {
+public class BookingFacade {
 
     private final WebClient bookingWebClient;
 
