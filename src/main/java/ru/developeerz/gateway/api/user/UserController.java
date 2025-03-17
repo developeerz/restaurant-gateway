@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,8 @@ public class UserController {
 
     @Operation(summary = "Регистрация")
     @PostMapping(ApiPaths.REGISTRATION)
-    public void userRegistration(@RequestBody @Valid RegistrationRequest request) {
-        userFacade.registrationUser(request);
+    public Mono<ResponseEntity<Void>> userRegistration(@RequestBody @Valid RegistrationRequest request) {
+        return userFacade.registrationUser(request);
     }
 
     @PostMapping(ApiPaths.VERIFY)

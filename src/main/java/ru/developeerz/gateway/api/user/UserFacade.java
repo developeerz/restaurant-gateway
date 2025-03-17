@@ -1,6 +1,8 @@
 package ru.developeerz.gateway.api.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -15,12 +17,14 @@ public class UserFacade {
 
     private final WebClient userWebClient;
 
-    public void registrationUser(RegistrationRequest request) {
-        userWebClient.post()
+    public Mono<ResponseEntity<Void>> registrationUser(RegistrationRequest request) {
+        return userWebClient.post()
                 .uri("/api/user/registration")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(Void.class);
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse ->
+                        clientResponse.createException().flatMap(Mono::error))
+                .toBodilessEntity();
     }
 
     public Mono<JwtResponse> verificationUser(VerificationRequest request) {
